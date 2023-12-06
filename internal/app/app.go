@@ -12,5 +12,5 @@ func Run() {
 
 	router := gin.Default()
 	router.GET("/access-token", services.GetAccessToken)
-	router.Run("localhost:3000")
+	router.Run("localhost:8888")
 }
