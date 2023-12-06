@@ -11,6 +11,9 @@ func Run() {
 	fmt.Println("app init")
 
 	router := gin.Default()
-	router.GET("/access-token", services.GetAccessToken)
-	router.Run("localhost:8888")
+	router.POST("/access-token", services.GetAccessToken)
+	router.GET("/spotify-user-authorization", services.SpotifyUserAuthorization)
+	router.GET("/callback", services.SpotifyLoginCallback)
+
+	router.Run("localhost:8080")
 }
