@@ -8,9 +8,8 @@ import (
 func Run() {
 	router := gin.Default()
 
-	router.POST("/access-token", services.GetAccessToken)
+	router.GET("/spotify-access-token", services.GetAccessToken)
 	router.GET("/spotify-user-authorization", services.SpotifyUserAuthorization)
-	router.GET("/callback", services.SpotifyLoginCallback)
 
 	router.Run("localhost:8080")
 }
