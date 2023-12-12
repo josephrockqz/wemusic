@@ -6,4 +6,7 @@ Application structure is based on the following:
 
 ## Prerequisites
 
-For sending CORS requests between front end and back end applications locally, can use this [chrome extensions](https://chromewebstore.google.com/detail/allow-cors-access-control/lhobafahddgcelffkeicbaginigeejlf?pli=1) to bypass CORS errors
+Export Spotify application credentials in order to make requests with the following commands:
+
+`export SPOTIFY_CLIENT_ID=...`
+`export SPOTIFY_CLIENT_SECRET=...`
