@@ -11,9 +11,7 @@ import (
 	"github.com/josephrockqz/wemusic-golang/pkg/app"
 )
 
-// https://developer.spotify.com/documentation/general/guides/authorization-guide/#client-credentials-flow
-// https://developer.spotify.com/documentation/web-api/tutorials/getting-started#request-an-access-token
-// curl -X POST -H "Content-Type: application/x-www-form-urlencoded" -d 'grant_type=client_credentials&client_id=YOUR_CLIENT_ID&client_secret=YOUR_CLIENT_SECRET' "https://accounts.spotify.com/api/token"
+// https://developer.spotify.com/documentation/web-api/tutorials/code-flow
 func GetAccessToken(context *gin.Context) {
 	appG := app.Gin{C: context}
 	context.Writer.Header().Set("Access-Control-Allow-Origin", "*")
@@ -23,7 +21,7 @@ func GetAccessToken(context *gin.Context) {
 
 	req, err := http.NewRequest("POST", "https://accounts.spotify.com/api/token", nil)
 	if err != nil {
-		fmt.Printf("client: could not create Spotify request: %s\n", err)
+		fmt.Printf("client: could not create Spotify access token request: %s\n", err)
 		appG.Response(http.StatusServiceUnavailable, status.ERROR, map[string]interface{}{
 			"message": "spotifyAccessToken",
 		})

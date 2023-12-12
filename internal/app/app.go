@@ -10,6 +10,7 @@ func Run() {
 
 	router.GET("/spotify-access-token", services.GetAccessToken)
 	router.GET("/spotify-user-authorization", services.SpotifyUserAuthorization)
+	router.GET("/spotify-user-authorization-callback", services.SpotifyUserAuthorizationCallback)
 
 	router.Run("localhost:8080")
 }
