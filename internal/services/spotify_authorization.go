@@ -42,13 +42,22 @@ func SpotifyUserAuthorizationCallback(context *gin.Context) {
 	if !ok {
 		fmt.Println("Could not get Spotify user authorization code from request URL.")
 		appG.Response(http.StatusServiceUnavailable, status.ERROR, map[string]interface{}{
-			"message": "ould not get Spotify user authorization code from request URL.",
+			"message": "could not get Spotify user authorization code from request URL.",
 		})
 		return
 	}
-	fmt.Println("code:", code[0])
 
-	appG.Response(http.StatusOK, status.SUCCESS, map[string]interface{}{
-		"message": "spotifyUserAuthorizationCallback",
+	accessToken, err := GetAccessToken(code[0])
+	if err != nil {
+		fmt.Println("Could not get Spotify access token.")
+		appG.Response(http.StatusServiceUnavailable, status.ERROR, map[string]interface{}{
+			"message": err.Error(),
+		})
+		return
+	}
+
+	fmt.Println("access token:", accessToken)
+	appG.Response(http.StatusAccepted, status.SUCCESS, map[string]interface{}{
+		"access_token": accessToken,
 	})
 }

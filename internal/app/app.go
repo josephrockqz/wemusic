@@ -8,7 +8,6 @@ import (
 func Run() {
 	router := gin.Default()
 
-	router.GET("/spotify-access-token", services.GetAccessToken)
 	router.GET("/spotify-user-authorization", services.SpotifyUserAuthorization)
 	router.GET("/spotify-user-authorization-callback", services.SpotifyUserAuthorizationCallback)
 
