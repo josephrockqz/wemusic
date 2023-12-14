@@ -53,6 +53,7 @@ func GetAccessToken(code string) (string, error) {
 	// TODO: convert response body JSON to map
 
 	// TODO: add error handling for respBody
+	// e.g. if "error" key exists in response body map, then return "", error_description value
 	// response body: {"access_token":"BQCmET6xTmFN-bryFanwbQJDtSW8TaYwdptSQ8n4wK3HVP9WVMF6QrT-B6mvemjNaP0Y-lfslH44P82nu9fmCz-7w-_wSmsCuQmgjJZDr5ABSBMDfOb2prBVs29aZbLXAk3pjJFSjA6E_OKSlIz1l3kgx0VpM4_5m4cf_oQ-1gVRoxDPf8PbO9AYZ0V8GoK2lA4","token_type":"Bearer","expires_in":3600,"refresh_token":"AQAAuBGB-iejtq3r45-hQOf6i6PlBBiUnwHqQl8sixJl7kGQbj65fQffdWtyhBufA7EBwK3Ak6mmP4MimQzRECDx-khdAQdbP3zWv_T2-sBlIDCBDOuNy9u2e6pZ-pY-0Xc","scope":"user-read-email user-read-private"}
 	// response body: {"error":"unsupported_grant_type","error_description":"grant_type parameter is missing"}
 	fmt.Println("response body:", string(respBody))
