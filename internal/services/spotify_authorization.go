@@ -13,10 +13,10 @@ import (
 
 func SpotifyUserAuthorization(context *gin.Context) {
 	appG := app.Gin{C: context}
-	context.Writer.Header().Set("Access-Control-Allow-Origin", "*")
-	context.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
-	context.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
-	context.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT")
+	// context.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+	// context.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
+	// context.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
+	// context.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT")
 
 	clientId := os.Getenv("SPOTIFY_CLIENT_ID")
 	if clientId == "" {
@@ -28,19 +28,25 @@ func SpotifyUserAuthorization(context *gin.Context) {
 	}
 
 	state := utils.GenerateRandomString(16)
-	url := "https://accounts.spotify.com/authorize?client_id=" + clientId + "&response_type=code&redirect_uri=http://localhost:8080/spotify-user-authorization-callback&scope=user-read-private%20user-read-email&state=" + state
+	url := "https://accounts.spotify.com/authorize?client_id=" + clientId + "&response_type=code" + "&redirect_uri=http://localhost:8080/spotify-user-authorization-callback&scope=user-read-private%20user-read-email&state=" + state
 
 	context.Redirect(http.StatusTemporaryRedirect, url)
 }
 
 func SpotifyUserAuthorizationCallback(context *gin.Context) {
 	appG := app.Gin{C: context}
-	context.Writer.Header().Set("Access-Control-Allow-Origin", "*")
-	context.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
-	context.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
-	context.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT")
 
-	fmt.Println("Spotify user authorization callback")
+	queryParams := context.Request.URL.Query()
+
+	code, ok := queryParams["code"]
+	if !ok {
+		fmt.Println("Could not get Spotify user authorization code from request URL.")
+		appG.Response(http.StatusServiceUnavailable, status.ERROR, map[string]interface{}{
+			"message": "ould not get Spotify user authorization code from request URL.",
+		})
+		return
+	}
+	fmt.Println("code:", code[0])
 
 	appG.Response(http.StatusOK, status.SUCCESS, map[string]interface{}{
 		"message": "spotifyUserAuthorizationCallback",

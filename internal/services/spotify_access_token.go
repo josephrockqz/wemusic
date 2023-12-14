@@ -14,10 +14,10 @@ import (
 // https://developer.spotify.com/documentation/web-api/tutorials/code-flow
 func GetAccessToken(context *gin.Context) {
 	appG := app.Gin{C: context}
-	context.Writer.Header().Set("Access-Control-Allow-Origin", "*")
-	context.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
-	context.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
-	context.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT")
+	// context.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+	// context.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
+	// context.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
+	// context.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT")
 
 	req, err := http.NewRequest("POST", "https://accounts.spotify.com/api/token", nil)
 	if err != nil {
