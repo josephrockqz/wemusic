@@ -2,6 +2,7 @@ package services
 
 import (
 	"encoding/base64"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -39,24 +40,45 @@ func GetAccessToken(code string) (string, error) {
 
 	resp, err := client.Do(req)
 	if err != nil {
-		fmt.Printf("client: could not get response for Spotify access token request: %s\n", err)
+		fmt.Printf("could not get response for Spotify access token request: %s\n", err)
 		return "", err
 	}
 
 	defer resp.Body.Close()
+
 	respBody, err := io.ReadAll(resp.Body)
 	if err != nil {
-		fmt.Printf("client: could not read response body for Spotify access token: %s\n", err)
+		fmt.Printf("could not read response body for Spotify access token: %s\n", err)
 		return "", err
 	}
 
-	// TODO: convert response body JSON to map
+	// type AccessTokenResponseSuccessData struct {
+	// 	AccessToken  string `json:"access_token"`
+	// 	TokenType    string `json:"token_type"`
+	// 	ExpiresIn    int    `json:"expires_in"`
+	// 	RefreshToken string `json:"refresh_token"`
+	// }
 
-	// TODO: add error handling for respBody
-	// e.g. if "error" key exists in response body map, then return "", error_description value
-	// response body: {"access_token":"BQCmET6xTmFN-bryFanwbQJDtSW8TaYwdptSQ8n4wK3HVP9WVMF6QrT-B6mvemjNaP0Y-lfslH44P82nu9fmCz-7w-_wSmsCuQmgjJZDr5ABSBMDfOb2prBVs29aZbLXAk3pjJFSjA6E_OKSlIz1l3kgx0VpM4_5m4cf_oQ-1gVRoxDPf8PbO9AYZ0V8GoK2lA4","token_type":"Bearer","expires_in":3600,"refresh_token":"AQAAuBGB-iejtq3r45-hQOf6i6PlBBiUnwHqQl8sixJl7kGQbj65fQffdWtyhBufA7EBwK3Ak6mmP4MimQzRECDx-khdAQdbP3zWv_T2-sBlIDCBDOuNy9u2e6pZ-pY-0Xc","scope":"user-read-email user-read-private"}
-	// response body: {"error":"unsupported_grant_type","error_description":"grant_type parameter is missing"}
-	fmt.Println("response body:", string(respBody))
+	// type AccessTokenResponseFailureData struct {
+	// 	Error            string `json:"error"`
+	// 	ErrorDescription string `json:"error_description"`
+	// }
 
-	return "Access Tokennnnnnnn", nil
+	var accessTokenResponseData map[string]interface{}
+	err = json.Unmarshal(respBody, &accessTokenResponseData)
+	if err != nil {
+		fmt.Printf("could not unmarshal response body for Spotify access token: %s\n", err)
+		return "", err
+	}
+
+	if error, ok := accessTokenResponseData["error"]; ok {
+		fmt.Printf("error in Spotify access token response body: %s, %s\n", error, accessTokenResponseData["error_description"])
+		return "", err
+	}
+	if accessToken, ok := accessTokenResponseData["access_token"]; !ok {
+		fmt.Printf("could not get access token Spotify access token response body: %s\n", err)
+		return "", err
+	} else {
+		return accessToken.(string), nil
+	}
 }
