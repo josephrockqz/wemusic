@@ -32,6 +32,10 @@ func SpotifyUserAuthorizationCallback(context *gin.Context) {
 		return
 	}
 
+	// TODO: make Spotify Library API call w/access token
+	// https://github.com/spotify/web-api-examples/blob/7c4872d343a6f29838c437cf163012947b4bffb9/authorization/authorization_code/app.js#L84
+	// can either make call in back end or in browser
+
 	fmt.Println("access token:", accessToken)
 	appG.Response(http.StatusAccepted, status.SUCCESS, map[string]interface{}{
 		"access_token": accessToken,
