@@ -10,6 +10,7 @@ import (
 	"os"
 )
 
+// TODO: refactor to use echo framework instead of gin
 // https://developer.spotify.com/documentation/web-api/tutorials/code-flow
 func GetAccessToken(code string) (string, error) {
 	req, err := http.NewRequest("POST", "https://accounts.spotify.com/api/token", nil)

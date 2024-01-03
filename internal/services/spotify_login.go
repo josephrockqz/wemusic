@@ -1,20 +1,22 @@
 package services
 
 import (
-	"fmt"
+	"net/http"
 	"os"
 
-	"github.com/gin-gonic/gin"
 	"github.com/josephrockqz/wemusic-golang/pkg/utils"
+	"github.com/labstack/echo/v4"
 )
 
-func SpotifyLogin(context *gin.Context) {
-	redirectLocation := constructRedirectLocation()
+func SpotifyLogin(context echo.Context) error {
+	// redirectLocation := constructRedirectLocation()
+	// fmt.Println(redirectLocation)
 
-	fmt.Println(redirectLocation)
-
-	context.String(200, redirectLocation)
-	// context.Redirect(http.StatusMovedPermanently, redirectLocation)
+	// TODO: redirect request to spotify authorize URL instead of returning a string
+	return context.JSON(
+		http.StatusOK,
+		"howdy",
+	)
 }
 
 func constructRedirectLocation() string {

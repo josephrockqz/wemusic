@@ -9,6 +9,7 @@ import (
 	"github.com/josephrockqz/wemusic-golang/pkg/app"
 )
 
+// TODO: refactor to use echo framework instead of gin
 func SpotifyUserAuthorizationCallback(context *gin.Context) {
 	appG := app.Gin{C: context}
 
