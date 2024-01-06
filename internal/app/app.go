@@ -14,5 +14,5 @@ func Run() {
 
 	e.GET("/spotify-login", services.SpotifyLogin)
 
-	e.Start(":8080")
+	e.Logger.Fatal(e.Start(":8080"))
 }
