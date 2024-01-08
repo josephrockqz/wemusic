@@ -9,7 +9,6 @@ import (
 func Run() {
 	e := echo.New()
 
-	// TODO: use additional middleware (e.g. logger)
 	e.Use(middleware.CorsMiddleware())
 
 	e.GET("/spotify-login", services.SpotifyLogin)
