@@ -1,7 +1,6 @@
 package services
 
 import (
-	"fmt"
 	"net/http"
 	"os"
 
@@ -11,13 +10,8 @@ import (
 
 func SpotifyLogin(context echo.Context) error {
 	redirectLocation := constructRedirectLocation()
-	fmt.Println(redirectLocation)
 
-	// TODO: redirect request to spotify authorize URL instead of returning a string
-	return context.JSON(
-		http.StatusOK,
-		"howdy",
-	)
+	return context.Redirect(http.StatusPermanentRedirect, redirectLocation)
 }
 
 func constructRedirectLocation() string {
