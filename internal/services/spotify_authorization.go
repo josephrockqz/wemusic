@@ -1,36 +1,35 @@
 package services
 
 import (
+	"errors"
 	"fmt"
-	"net/http"
 
-	"github.com/gin-gonic/gin"
-	"github.com/josephrockqz/wemusic-golang/internal/status"
-	"github.com/josephrockqz/wemusic-golang/pkg/app"
+	"github.com/labstack/echo/v4"
 )
 
-// TODO: refactor to use echo framework instead of gin
-func SpotifyUserAuthorizationCallback(context *gin.Context) {
-	appG := app.Gin{C: context}
+func SpotifyUserAuthorizationCallback(context echo.Context) error {
+	queryParams := context.QueryParams()
+	fmt.Println(queryParams)
 
-	queryParams := context.Request.URL.Query()
+	state, ok := queryParams["state"]
+	if !ok {
+		fmt.Println("Could not get state from request URL.")
+		return errors.New("Could not get state from request URL.")
+	}
+	// TODO: compare state to stored state
+	fmt.Println("state:", state)
 
 	code, ok := queryParams["code"]
+	fmt.Println("code:", code)
 	if !ok {
 		fmt.Println("Could not get Spotify user authorization code from request URL.")
-		appG.Response(http.StatusServiceUnavailable, status.ERROR, map[string]interface{}{
-			"message": "could not get Spotify user authorization code from request URL.",
-		})
-		return
+		return errors.New("Could not get Spotify user authorization code from request URL.")
 	}
 
 	accessToken, err := GetAccessToken(code[0])
 	if err != nil {
 		fmt.Println("Could not get Spotify access token.")
-		appG.Response(http.StatusServiceUnavailable, status.ERROR, map[string]interface{}{
-			"message": err.Error(),
-		})
-		return
+		return errors.New("Could not get Spotify access token.")
 	}
 
 	// TODO: make Spotify Library API call w/access token
@@ -38,7 +37,5 @@ func SpotifyUserAuthorizationCallback(context *gin.Context) {
 	// can either make call in back end or in browser
 
 	fmt.Println("access token:", accessToken)
-	appG.Response(http.StatusAccepted, status.SUCCESS, map[string]interface{}{
-		"access_token": accessToken,
-	})
+	return nil
 }

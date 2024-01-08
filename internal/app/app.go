@@ -12,6 +12,7 @@ func Run() {
 	e.Use(middleware.CorsMiddleware())
 
 	e.GET("/spotify-login", services.SpotifyLogin)
+	e.GET("/spotify-user-authorization-callback", services.SpotifyUserAuthorizationCallback)
 
 	e.Logger.Fatal(e.Start(":8080"))
 }
