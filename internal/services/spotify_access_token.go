@@ -53,6 +53,8 @@ func GetAccessToken(code string) (string, error) {
 		return "", err
 	}
 
+	// TODO: use structs when unmarshaling response
+
 	// type AccessTokenResponseSuccessData struct {
 	// 	AccessToken  string `json:"access_token"`
 	// 	TokenType    string `json:"token_type"`

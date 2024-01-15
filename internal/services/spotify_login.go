@@ -10,7 +10,6 @@ import (
 
 func SpotifyLogin(context echo.Context) error {
 	redirectLocation := constructRedirectLocation()
-
 	return context.Redirect(http.StatusPermanentRedirect, redirectLocation)
 }
 
