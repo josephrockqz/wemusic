@@ -30,6 +30,13 @@ func SpotifyUserAuthorizationCallback(context echo.Context) error {
 		return errors.New("Could not get Spotify access token.")
 	}
 
+	err = GetLibrary(accessToken)
+	if err != nil {
+		fmt.Println("Get Spotify library function call failed", err)
+	}
+
+	// TODO: store access token for later use (as cookie?)
 	fmt.Println("access token:", accessToken)
+
 	return nil
 }
