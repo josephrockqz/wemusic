@@ -8,8 +8,6 @@ import (
 )
 
 func GetLibrary(accessToken string) error {
-	fmt.Println("Get Library function:", accessToken)
-
 	req, err := http.NewRequest("GET", "https://api.spotify.com/v1/me", nil)
 	if err != nil {
 		fmt.Printf("could not create Spotify library request: %s\n", err)
