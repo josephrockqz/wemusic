@@ -2,41 +2,43 @@ package services
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/labstack/echo/v4"
 )
 
 func SpotifyUserAuthorizationCallback(context echo.Context) error {
+	context.Logger().Print("enter SpotifyUserAuthorizationCallback")
+
 	queryParams := context.QueryParams()
 
 	state, ok := queryParams["state"]
 	if !ok {
-		fmt.Println("Could not get state from request URL.")
+		context.Logger().Print("Could not get state from request URL.")
 		return errors.New("Could not get state from request URL.")
 	}
+
 	// TODO: compare state to stored state
-	fmt.Println("state:", state)
+	context.Logger().Print("state:", state)
 
 	code, ok := queryParams["code"]
 	if !ok {
-		fmt.Println("Could not get Spotify user authorization code from request URL.")
+		context.Logger().Print("Could not get Spotify user authorization code from request URL.")
 		return errors.New("Could not get Spotify user authorization code from request URL.")
 	}
 
-	accessToken, err := GetAccessToken(code[0])
+	accessToken, err := GetAccessToken(context, code[0])
 	if err != nil {
-		fmt.Println("Could not get Spotify access token.")
+		context.Logger().Print("Could not get Spotify access token.")
 		return errors.New("Could not get Spotify access token.")
 	}
 
-	err = GetLibrary(accessToken)
+	err = GetLibrary(context, accessToken)
 	if err != nil {
-		fmt.Println("Get Spotify library function call failed", err)
+		context.Logger().Print("Get Spotify library function call failed", err)
 	}
 
 	// TODO: store access token for later use (as cookie?)
-	fmt.Println("access token:", accessToken)
+	context.Logger().Print("access token:", accessToken)
 
 	return nil
 }
