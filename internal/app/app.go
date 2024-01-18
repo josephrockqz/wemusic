@@ -9,6 +9,7 @@ import (
 func Run() {
 	e := echo.New()
 
+	e.Use(middleware.LoggerMiddleWare())
 	e.Use(middleware.CorsMiddleware())
 
 	e.GET("/spotify-login", services.SpotifyLogin)
