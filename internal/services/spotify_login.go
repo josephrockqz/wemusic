@@ -1,6 +1,7 @@
 package services
 
 import (
+	"errors"
 	"net/http"
 	"os"
 
@@ -9,12 +10,20 @@ import (
 )
 
 func SpotifyLogin(context echo.Context) error {
-	redirectLocation := constructRedirectLocation()
+	redirectLocation, err := constructRedirectLocation(context)
+	if err != nil {
+		return errors.New("could not construct Spotify login redirect URI")
+	}
 	return context.Redirect(http.StatusPermanentRedirect, redirectLocation)
 }
 
-func constructRedirectLocation() string {
+func constructRedirectLocation(context echo.Context) (string, error) {
 	clientId := os.Getenv("SPOTIFY_CLIENT_ID")
+	if clientId == "" {
+		context.Logger().Error("Could not get Spotify client id. Please set SPOTIFY_CLIENT_ID environment variable.")
+		return "", errors.New("Could not get Spotify client id from environment")
+	}
+
 	state := utils.GenerateRandomString(16)
 
 	url := "https://accounts.spotify.com/authorize"
@@ -24,5 +33,5 @@ func constructRedirectLocation() string {
 	url += "&scope=user-read-private%20user-read-email"
 	url += "&state=" + state
 
-	return url
+	return url, nil
 }
