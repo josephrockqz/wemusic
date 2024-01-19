@@ -8,6 +8,7 @@ import (
 
 func Run() {
 	e := echo.New()
+	e.Logger.SetLevel(0)
 
 	e.Use(middleware.LoggerMiddleware())
 	e.Use(middleware.CorsMiddleware())

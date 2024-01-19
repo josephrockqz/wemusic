@@ -17,7 +17,7 @@ func SpotifyUserAuthorizationCallback(context echo.Context) error {
 	}
 
 	// TODO: compare state to stored state
-	context.Logger().Print("state:", state)
+	context.Logger().Info("state:", state)
 
 	code, ok := queryParams["code"]
 	if !ok {
@@ -37,7 +37,7 @@ func SpotifyUserAuthorizationCallback(context echo.Context) error {
 	}
 
 	// TODO: store access token for later use (as cookie?)
-	context.Logger().Print("access token:", accessToken)
+	context.Logger().Info("access token:", accessToken)
 
 	return context.NoContent(http.StatusOK)
 }
