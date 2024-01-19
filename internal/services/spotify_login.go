@@ -1,7 +1,6 @@
 package services
 
 import (
-	"errors"
 	"net/http"
 	"os"
 
@@ -12,7 +11,7 @@ import (
 func SpotifyLogin(context echo.Context) error {
 	redirectLocation, err := constructRedirectLocation(context)
 	if err != nil {
-		return errors.New("could not construct Spotify login redirect URI")
+		return err
 	}
 	return context.Redirect(http.StatusPermanentRedirect, redirectLocation)
 }
@@ -21,7 +20,7 @@ func constructRedirectLocation(context echo.Context) (string, error) {
 	clientId := os.Getenv("SPOTIFY_CLIENT_ID")
 	if clientId == "" {
 		context.Logger().Error("Could not get Spotify client id. Please set SPOTIFY_CLIENT_ID environment variable.")
-		return "", errors.New("Could not get Spotify client id from environment")
+		return "", echo.NewHTTPError(http.StatusUnauthorized, "Please provide valid Spotify Client ID")
 	}
 
 	state := utils.GenerateRandomString(16)

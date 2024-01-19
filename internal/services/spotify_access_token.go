@@ -3,7 +3,6 @@ package services
 import (
 	"encoding/base64"
 	"encoding/json"
-	"errors"
 	"io"
 	"net/http"
 	"os"
@@ -16,15 +15,15 @@ import (
 func GetAccessToken(context echo.Context, code string) (string, error) {
 	req, err := http.NewRequest("POST", "https://accounts.spotify.com/api/token", nil)
 	if err != nil {
-		context.Logger().Error("could not create Spotify access token request: %s\n", err)
-		return "", err
+		context.Logger().Error("could not create Spotify access token request:", err)
+		return "", echo.NewHTTPError(http.StatusInternalServerError, "could not create Spotify access token request:", err)
 	}
 
 	clientId := os.Getenv("SPOTIFY_CLIENT_ID")
 	clientSecret := os.Getenv("SPOTIFY_CLIENT_SECRET")
 	if clientId == "" || clientSecret == "" {
 		context.Logger().Error("Could not get Spotify client id or client secret. Please set SPOTIFY_CLIENT_ID and SPOTIFY_CLIENT_SECRET environment variables.")
-		return "", errors.New("Could not get Spotify client id or client secret from environment")
+		return "", echo.NewHTTPError(http.StatusInternalServerError, "Could not get Spotify client id or client secret from environment")
 	}
 
 	query := req.URL.Query()
@@ -42,16 +41,16 @@ func GetAccessToken(context echo.Context, code string) (string, error) {
 
 	resp, err := client.Do(req)
 	if err != nil {
-		context.Logger().Error("could not get response for Spotify access token request: %s\n", err)
-		return "", err
+		context.Logger().Error("could not get response for Spotify access token request:", err)
+		return "", echo.NewHTTPError(http.StatusInternalServerError, "could not get response for Spotify access token request:", err)
 	}
 
 	defer resp.Body.Close()
 
 	respBody, err := io.ReadAll(resp.Body)
 	if err != nil {
-		context.Logger().Error("could not read response body for Spotify access token: %s\n", err)
-		return "", err
+		context.Logger().Error("could not read response body for Spotify access token:", err)
+		return "", echo.NewHTTPError(http.StatusInternalServerError, "could not read response body for Spotify access token:", err)
 	}
 
 	// TODO: use structs when unmarshaling response
@@ -71,17 +70,17 @@ func GetAccessToken(context echo.Context, code string) (string, error) {
 	var accessTokenResponseData map[string]interface{}
 	err = json.Unmarshal(respBody, &accessTokenResponseData)
 	if err != nil {
-		context.Logger().Error("could not unmarshal response body for Spotify access token: %s\n", err)
-		return "", err
+		context.Logger().Error("could not unmarshal response body for Spotify access token:", err)
+		return "", echo.NewHTTPError(http.StatusInternalServerError, "could not unmarshal response body for Spotify access token:", err)
 	}
 
 	if error, ok := accessTokenResponseData["error"]; ok {
-		context.Logger().Error("error in Spotify access token response body: %s, %s\n", error, accessTokenResponseData["error_description"])
-		return "", err
+		context.Logger().Error("error in Spotify access token response body:", error, accessTokenResponseData["error_description"])
+		return "", echo.NewHTTPError(http.StatusInternalServerError, "error in Spotify access token response body:", error, accessTokenResponseData["error_description"])
 	}
 	if accessToken, ok := accessTokenResponseData["access_token"]; !ok {
-		context.Logger().Error("could not get access token Spotify access token response body: %s\n", err)
-		return "", err
+		context.Logger().Error("could not get access token Spotify access token response body:", err)
+		return "", echo.NewHTTPError(http.StatusInternalServerError, "could not get access token Spotify access token response body:", err)
 	} else {
 		return accessToken.(string), nil
 	}
