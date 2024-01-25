@@ -6,6 +6,7 @@ import (
 
 	"github.com/josephrockqz/wemusic-golang/pkg/utils"
 	"github.com/labstack/echo/v4"
+	"go.uber.org/zap"
 )
 
 func SpotifyLogin(context echo.Context) error {
@@ -19,7 +20,7 @@ func SpotifyLogin(context echo.Context) error {
 func constructRedirectLocation(context echo.Context) (string, error) {
 	clientId := os.Getenv("SPOTIFY_CLIENT_ID")
 	if clientId == "" {
-		context.Logger().Error("Could not get Spotify client id. Please set SPOTIFY_CLIENT_ID environment variable.")
+		zap.L().Error("Could not get Spotify client id. Please set SPOTIFY_CLIENT_ID environment variable.")
 		return "", echo.NewHTTPError(http.StatusUnauthorized, "Please provide valid Spotify Client ID")
 	}
 
