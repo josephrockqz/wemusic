@@ -5,6 +5,7 @@ import (
 	"io"
 	"net/http"
 
+	"github.com/josephrockqz/wemusic-golang/internal/transport"
 	"github.com/labstack/echo/v4"
 	"go.uber.org/zap"
 )
@@ -18,7 +19,7 @@ func GetLibrary(context echo.Context, accessToken string) error {
 
 	req.Header.Set("Authorization", "Bearer "+accessToken)
 
-	client := &http.Client{}
+	client := transport.HttpClient()
 
 	resp, err := client.Do(req)
 	if err != nil {

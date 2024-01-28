@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/josephrockqz/wemusic-golang/internal/transport"
 	"github.com/labstack/echo/v4"
 	"go.uber.org/zap"
 )
@@ -38,7 +39,7 @@ func GetAccessToken(context echo.Context, code string) (string, error) {
 	clientCredentialsEncoding := base64.StdEncoding.EncodeToString([]byte(clientCredentials))
 	req.Header.Set("Authorization", "Basic "+clientCredentialsEncoding)
 
-	client := &http.Client{}
+	client := transport.HttpClient()
 
 	resp, err := client.Do(req)
 	if err != nil {
