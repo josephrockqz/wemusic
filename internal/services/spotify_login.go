@@ -2,7 +2,6 @@ package services
 
 import (
 	"net/http"
-	"os"
 
 	"github.com/josephrockqz/wemusic-golang/pkg/utils"
 	"github.com/labstack/echo/v4"
@@ -18,16 +17,20 @@ func SpotifyLogin(context echo.Context) error {
 }
 
 func constructRedirectLocation(context echo.Context) (string, error) {
-	clientId := os.Getenv("SPOTIFY_CLIENT_ID")
-	if clientId == "" {
+	spotifyClientId, err := utils.GetEnvironmentVariable("spotify_client_id")
+	if spotifyClientId == "" {
 		zap.L().Error("Could not get Spotify client id. Please set SPOTIFY_CLIENT_ID environment variable.")
+		return "", echo.NewHTTPError(http.StatusUnauthorized, "Please provide valid Spotify Client ID")
+	}
+	if err != nil {
+		zap.L().Error("Error retrieving Spotify Client ID from config file")
 		return "", echo.NewHTTPError(http.StatusUnauthorized, "Please provide valid Spotify Client ID")
 	}
 
 	state := utils.GenerateRandomString(16)
 
 	url := "https://accounts.spotify.com/authorize"
-	url += "?client_id=" + clientId
+	url += "?client_id=" + spotifyClientId
 	url += "&response_type=code"
 	url += "&redirect_uri=http://localhost:8080/spotify-user-authorization-callback"
 	url += "&scope=user-read-private%20user-read-email"

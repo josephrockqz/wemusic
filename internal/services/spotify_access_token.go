@@ -5,9 +5,9 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
-	"os"
 
 	"github.com/josephrockqz/wemusic-golang/internal/transport"
+	"github.com/josephrockqz/wemusic-golang/pkg/utils"
 	"github.com/labstack/echo/v4"
 	"go.uber.org/zap"
 )
@@ -21,8 +21,16 @@ func GetAccessToken(context echo.Context, code string) (string, error) {
 		return "", echo.NewHTTPError(http.StatusInternalServerError, "could not create Spotify access token request:", err)
 	}
 
-	clientId := os.Getenv("SPOTIFY_CLIENT_ID")
-	clientSecret := os.Getenv("SPOTIFY_CLIENT_SECRET")
+	clientId, err := utils.GetEnvironmentVariable("spotify_client_id")
+	if err != nil {
+		zap.L().Error("Error retrieving Spotify Client ID from config file")
+		return "", echo.NewHTTPError(http.StatusUnauthorized, "Please provide valid Spotify Client ID")
+	}
+	clientSecret, err := utils.GetEnvironmentVariable("spotify_client_secret")
+	if err != nil {
+		zap.L().Error("Error retrieving Spotify Client Secret from config file")
+		return "", echo.NewHTTPError(http.StatusUnauthorized, "Please provide valid Spotify Client ID")
+	}
 	if clientId == "" || clientSecret == "" {
 		zap.L().Error("Could not get Spotify client id or client secret. Please set SPOTIFY_CLIENT_ID and SPOTIFY_CLIENT_SECRET environment variables.")
 		return "", echo.NewHTTPError(http.StatusInternalServerError, "Could not get Spotify client id or client secret from environment")
