@@ -17,7 +17,7 @@ func SpotifyLogin(context echo.Context) error {
 }
 
 func constructRedirectLocation(context echo.Context) (string, error) {
-	spotifyClientId, err := utils.GetEnvironmentVariable("spotify_client_id")
+	spotifyClientId, err := utils.GetEnvironmentVariable("SPOTIFY_CLIENT_ID")
 	if spotifyClientId == "" {
 		zap.L().Error("Could not get Spotify client id. Please set SPOTIFY_CLIENT_ID environment variable.")
 		return "", echo.NewHTTPError(http.StatusUnauthorized, "Please provide valid Spotify Client ID")

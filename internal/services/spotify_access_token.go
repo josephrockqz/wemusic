@@ -21,17 +21,17 @@ func GetAccessToken(context echo.Context, code string) (string, error) {
 		return "", echo.NewHTTPError(http.StatusInternalServerError, "could not create Spotify access token request:", err)
 	}
 
-	clientId, err := utils.GetEnvironmentVariable("spotify_client_id")
+	spotifyClientId, err := utils.GetEnvironmentVariable("SPOTIFY_CLIENT_ID")
 	if err != nil {
 		zap.L().Error("Error retrieving Spotify Client ID from config file")
 		return "", echo.NewHTTPError(http.StatusUnauthorized, "Please provide valid Spotify Client ID")
 	}
-	clientSecret, err := utils.GetEnvironmentVariable("spotify_client_secret")
+	spotifyClientSecret, err := utils.GetEnvironmentVariable("SPOTIFY_CLIENT_SECRET")
 	if err != nil {
 		zap.L().Error("Error retrieving Spotify Client Secret from config file")
 		return "", echo.NewHTTPError(http.StatusUnauthorized, "Please provide valid Spotify Client ID")
 	}
-	if clientId == "" || clientSecret == "" {
+	if spotifyClientId == "" || spotifyClientSecret == "" {
 		zap.L().Error("Could not get Spotify client id or client secret. Please set SPOTIFY_CLIENT_ID and SPOTIFY_CLIENT_SECRET environment variables.")
 		return "", echo.NewHTTPError(http.StatusInternalServerError, "Could not get Spotify client id or client secret from environment")
 	}
@@ -43,7 +43,7 @@ func GetAccessToken(context echo.Context, code string) (string, error) {
 	req.URL.RawQuery = query.Encode()
 
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-	clientCredentials := clientId + ":" + clientSecret
+	clientCredentials := spotifyClientId + ":" + spotifyClientSecret
 	clientCredentialsEncoding := base64.StdEncoding.EncodeToString([]byte(clientCredentials))
 	req.Header.Set("Authorization", "Basic "+clientCredentialsEncoding)
 
