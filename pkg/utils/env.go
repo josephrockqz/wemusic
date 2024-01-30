@@ -6,7 +6,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-func GetEnvironmentVariable(variable string) (string, error) {
+func GetEnvironmentVariableByName(variable string) (string, error) {
 	viper.SetConfigName("local-template")
 	viper.AddConfigPath(".")
 	viper.AutomaticEnv()

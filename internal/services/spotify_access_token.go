@@ -21,12 +21,12 @@ func GetAccessToken(context echo.Context, code string) (string, error) {
 		return "", echo.NewHTTPError(http.StatusInternalServerError, "could not create Spotify access token request:", err)
 	}
 
-	spotifyClientId, err := utils.GetEnvironmentVariable("SPOTIFY_CLIENT_ID")
+	spotifyClientId, err := utils.GetEnvironmentVariableByName("SPOTIFY_CLIENT_ID")
 	if err != nil {
 		zap.L().Error("Error retrieving Spotify Client ID from config file")
 		return "", echo.NewHTTPError(http.StatusUnauthorized, "Please provide valid Spotify Client ID")
 	}
-	spotifyClientSecret, err := utils.GetEnvironmentVariable("SPOTIFY_CLIENT_SECRET")
+	spotifyClientSecret, err := utils.GetEnvironmentVariableByName("SPOTIFY_CLIENT_SECRET")
 	if err != nil {
 		zap.L().Error("Error retrieving Spotify Client Secret from config file")
 		return "", echo.NewHTTPError(http.StatusUnauthorized, "Please provide valid Spotify Client ID")
