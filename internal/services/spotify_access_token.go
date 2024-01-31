@@ -12,8 +12,6 @@ import (
 	"go.uber.org/zap"
 )
 
-// TODO: refactor to use echo framework instead of gin
-// https://developer.spotify.com/documentation/web-api/tutorials/code-flow
 func GetAccessToken(context echo.Context, code string) (string, error) {
 	req, err := http.NewRequest("POST", "https://accounts.spotify.com/api/token", nil)
 	if err != nil {
@@ -63,35 +61,20 @@ func GetAccessToken(context echo.Context, code string) (string, error) {
 		return "", echo.NewHTTPError(http.StatusInternalServerError, "could not read response body for Spotify access token:", err)
 	}
 
-	// TODO: use structs when unmarshaling response
+	type AccessTokenResponseSuccessData struct {
+		AccessToken  string `json:"access_token"`
+		TokenType    string `json:"token_type"`
+		ExpiresIn    int    `json:"expires_in"`
+		RefreshToken string `json:"refresh_token"`
+	}
 
-	// type AccessTokenResponseSuccessData struct {
-	// 	AccessToken  string `json:"access_token"`
-	// 	TokenType    string `json:"token_type"`
-	// 	ExpiresIn    int    `json:"expires_in"`
-	// 	RefreshToken string `json:"refresh_token"`
-	// }
-
-	// type AccessTokenResponseFailureData struct {
-	// 	Error            string `json:"error"`
-	// 	ErrorDescription string `json:"error_description"`
-	// }
-
-	var accessTokenResponseData map[string]interface{}
+	var accessTokenResponseData AccessTokenResponseSuccessData
 	err = json.Unmarshal(respBody, &accessTokenResponseData)
+
 	if err != nil {
 		zap.L().Error("could not unmarshal response body for Spotify access token: " + err.Error())
 		return "", echo.NewHTTPError(http.StatusInternalServerError, "could not unmarshal response body for Spotify access token:", err)
 	}
 
-	if _, ok := accessTokenResponseData["error"]; ok {
-		zap.L().Error("error in Spotify access token response body")
-		return "", echo.NewHTTPError(http.StatusInternalServerError, "error in Spotify access token response body:", accessTokenResponseData["error_description"])
-	}
-	if accessToken, ok := accessTokenResponseData["access_token"]; !ok {
-		zap.L().Error("could not get access token Spotify access token response body " + err.Error())
-		return "", echo.NewHTTPError(http.StatusInternalServerError, "could not get access token Spotify access token response body:", err)
-	} else {
-		return accessToken.(string), nil
-	}
+	return accessTokenResponseData.AccessToken, nil
 }
