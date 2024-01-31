@@ -16,8 +16,14 @@ func SpotifyUserAuthorizationCallback(context echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, "Could not get state from request URL.")
 	}
 
-	// TODO: compare state to stored state
-	zap.L().Info("state: " + state[0])
+	cookie, err := context.Cookie("spotify_authorize_state")
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, "Unable to retrieve state value from cookie")
+	}
+	if cookie.Value != state[0] {
+		zap.L().Error("State value does not match state stored in cookie.")
+		return echo.NewHTTPError(http.StatusInternalServerError, "State value does not match state stored in cookie.")
+	}
 
 	code, ok := queryParams["code"]
 	if !ok {
