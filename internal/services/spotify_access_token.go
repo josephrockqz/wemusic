@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
+	"time"
 
 	"github.com/josephrockqz/wemusic-golang/internal/transport"
 	"github.com/josephrockqz/wemusic-golang/pkg/utils"
@@ -82,8 +83,7 @@ func GetAccessToken(context echo.Context, code string) (string, error) {
 	accessTokenCookie := new(http.Cookie)
 	accessTokenCookie.Name = "spotify_authorize_access_token"
 	accessTokenCookie.Value = accessToken
-	// zap.L().Info(accessTokenResponseData.ExpiresIn)
-	// accessTokenCookie.Expires = accessTokenResponseData.ExpiresIn
+	accessTokenCookie.Expires = time.Now().Add(time.Duration(accessTokenResponseData.ExpiresIn) * time.Second)
 	context.SetCookie(accessTokenCookie)
 
 	return accessToken, nil
