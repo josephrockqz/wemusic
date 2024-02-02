@@ -81,9 +81,10 @@ func GetAccessToken(context echo.Context, code string) (string, error) {
 	zap.L().Info("access token: " + accessToken)
 
 	accessTokenCookie := &http.Cookie{
-		Name:    "spotify_authorize_access_token",
-		Value:   accessToken,
-		Expires: time.Now().Add(time.Duration(accessTokenResponseData.ExpiresIn) * time.Second),
+		Name:     "spotify_authorize_access_token",
+		Value:    accessToken,
+		Expires:  time.Now().Add(time.Duration(accessTokenResponseData.ExpiresIn) * time.Second),
+		HttpOnly: true, // prevent XSS
 	}
 	context.SetCookie(accessTokenCookie)
 

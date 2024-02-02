@@ -29,12 +29,10 @@ func constructRedirectLocation(context echo.Context) (string, error) {
 
 	state := utils.GenerateRandomString(16)
 
-	// cookie := new(http.Cookie)
-	// cookie.Name = "spotify_authorize_state"
-	// cookie.Value = state
 	cookie := &http.Cookie{
-		Name:  "spotify_authorize_state",
-		Value: state,
+		Name:     "spotify_authorize_state",
+		Value:    state,
+		HttpOnly: true,
 	}
 	context.SetCookie(cookie)
 
