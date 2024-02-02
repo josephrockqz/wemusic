@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/josephrockqz/wemusic-golang/internal/models"
 	"github.com/josephrockqz/wemusic-golang/internal/transport"
 	"github.com/josephrockqz/wemusic-golang/pkg/utils"
 	"github.com/labstack/echo/v4"
@@ -62,14 +63,7 @@ func GetAccessToken(context echo.Context, code string) (string, error) {
 		return "", echo.NewHTTPError(http.StatusInternalServerError, "could not read response body for Spotify access token:", err)
 	}
 
-	type AccessTokenResponseSuccessData struct {
-		AccessToken  string `json:"access_token"`
-		TokenType    string `json:"token_type"`
-		ExpiresIn    int    `json:"expires_in"`
-		RefreshToken string `json:"refresh_token"`
-	}
-
-	var accessTokenResponseData AccessTokenResponseSuccessData
+	var accessTokenResponseData models.AccessTokenResponseSuccessData
 	err = json.Unmarshal(respBody, &accessTokenResponseData)
 
 	if err != nil {
