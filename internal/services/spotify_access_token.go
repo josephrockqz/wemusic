@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/josephrockqz/wemusic-golang/internal/models"
 	"github.com/josephrockqz/wemusic-golang/internal/transport"
+	"github.com/josephrockqz/wemusic-golang/models"
 	"github.com/josephrockqz/wemusic-golang/pkg/utils"
 	"github.com/labstack/echo/v4"
 	"go.uber.org/zap"
