@@ -76,5 +76,15 @@ func GetAccessToken(context echo.Context, code string) (string, error) {
 		return "", echo.NewHTTPError(http.StatusInternalServerError, "could not unmarshal response body for Spotify access token:", err)
 	}
 
-	return accessTokenResponseData.AccessToken, nil
+	accessToken := accessTokenResponseData.AccessToken
+	zap.L().Info("access token: " + accessToken)
+
+	accessTokenCookie := new(http.Cookie)
+	accessTokenCookie.Name = "spotify_authorize_access_token"
+	accessTokenCookie.Value = accessToken
+	// zap.L().Info(accessTokenResponseData.ExpiresIn)
+	// accessTokenCookie.Expires = accessTokenResponseData.ExpiresIn
+	context.SetCookie(accessTokenCookie)
+
+	return accessToken, nil
 }
