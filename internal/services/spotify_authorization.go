@@ -31,11 +31,13 @@ func SpotifyUserAuthorizationCallback(context echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, "Could not get Spotify user authorization code from request URL.")
 	}
 
-	_, err = GetAccessToken(context, code[0])
+	spotifyAccessToken, err := GetAccessToken(context, code[0])
 	if err != nil {
 		zap.L().Error("Could not get Spotify access token.")
 		return echo.NewHTTPError(http.StatusInternalServerError, "Could not get Spotify access token.")
 	}
+
+	GetProfile(context, spotifyAccessToken)
 
 	return context.NoContent(http.StatusCreated)
 }
